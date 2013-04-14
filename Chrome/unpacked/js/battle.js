@@ -1,3 +1,4 @@
+
 /*jslint white: true, browser: true, devel: true, undef: true,
 nomen: true, bitwise: true, plusplus: true,
 regexp: true, eqeq: true, newcap: true, forin: false */
@@ -104,6 +105,28 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
         15: 'High Warchief'
     };
 
+    battle.conquestDuelRankTable = {
+        0: 'Acolyte',
+        1: 'Scout',
+        2: 'Soldier',
+        3: 'Elite Soldier',
+        4: 'Squire',
+        5: 'Knight',
+        6: 'First Knight',
+        7: 'Legionnaire',
+        8: 'Centurion',
+        9: 'Champion',
+        10: 'Lieutenant Commander',
+        11: 'Commander',
+        12: 'High Commander',
+        13: 'Lieutenant General',
+        14: 'General',
+        15: 'High General',
+        16: 'Baron',
+        17: 'Earl',
+        18: 'Duke',
+    }; 
+    
     battle.hbest = 2;
 
     battle.load = function() {
@@ -541,7 +564,29 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                 }
 
                 break;
-            default:
+            case 'Conquest Duel Invade':
+                if (result.win) {
+                    battleRecord.invadewinsNum += 1;
+                    battleRecord.ibp += result.points;
+                } else {
+                    battleRecord.invadelossesNum += 1;
+                    battleRecord.ibp -= result.points;
+                    battleRecord.invadeLostTime = Date.now();
+                }
+
+                break;
+             case 'Conquest Duel Duel':
+                if (result.win) {
+                    battleRecord.duelwinsNum += 1;
+                    battleRecord.ibp += result.points;
+                } else {
+                    battleRecord.duellossesNum += 1;
+                    battleRecord.ibp -= result.points;
+                    battleRecord.duelLostTime = Date.now();
+                }
+
+                break;
+                default:
                 con.warn("Battle type unknown!", result.battleType);
             }
 
@@ -1233,7 +1278,15 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                         tempTime = $u.setContent(battleRecord.warLostTime, 0);
 
                         break;
-                    default:
+                    case 'Conquest Duel Invade':
+                        tempTime = $u.setContent(battleRecord.invadeLostTime, 0);
+
+                        break;
+                    case 'Conquest Duel Duel':
+                        tempTime = $u.setContent(battleRecord.duelLostTime, 0);
+
+                        break;
+                     default:
                         con.warn("Battle type unknown!", config.getItem("BattleType", 'Invade'));
                     }
 
@@ -1485,7 +1538,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                 chainBPInstructions = "Number of battle points won to initiate a chain attack. Specify 0 to always chain attack.",
                 chainGoldInstructions = "Amount of gold won to initiate a chain attack. Specify 0 to always chain attack.",
                 maxChainsInstructions = "Maximum number of chain hits after the initial attack.",
-                FMRankInstructions = "The lowest relative rank below yours that " + "you are willing to spend your stamina on. Leave blank to attack " + "any rank. (Uses Battle Rank for invade and duel, War Rank for wars.)",
+                FMRankInstructions = "The lowest relative rank below yours that " + "you are willing to spend your stamina on. Leave blank to attack " + "any rank. (Uses Battle Rank for invade and duel, Conquest Duel Rank for invade and duel, War Rank for wars.)",
                 FMARBaseInstructions = "This value sets the base for your Army " + "Ratio calculation [X * (Your Army Size/ Opponent Army Size)]. It is basically a multiplier for the army " +
                     "size of a player at your equal level. A value of 1 means you " + "will battle an opponent the same level as you with an army the " + "same size as you or less. Default .5",
                 FreshMeatARMaxInstructions = "This setting sets the highest value you will use for the Army Ratio [Math.min(Army Ratio, Army Ratio Max)] value. " +
@@ -1510,7 +1563,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                     'Only perform Player Recon, does not actually battle players.',
                     'Never - disables player battles'
                 ],
-                typeList = ['Invade', 'Duel', 'War'],
+                typeList = ['Invade', 'Duel', 'War', 'Conquest Duel Invade', 'Conquest Duel Duel'],
                 typeInst = ['Battle using Invade button', 'Battle using Duel button - no guarentee you will win though', 'War using Duel button - no guarentee you will win though'],
                 targetList = ['Freshmeat', 'Userid List', 'Raid'],
                 targetInst = ['Use settings to select a target from the Battle Page', 'Select target from the supplied list of userids', 'Raid Battles'],
@@ -1644,6 +1697,8 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                             id: '',
                             title: '',
                             width: '10%'
+                     case 'Conquest Duel Invade':
+                     case 'Conquest Duel Duel':
                         });
                         break;
                     case 'BR':
