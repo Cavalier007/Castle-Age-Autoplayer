@@ -1,4 +1,3 @@
-
 /*jslint white: true, browser: true, devel: true, undef: true,
 nomen: true, bitwise: true, plusplus: true,
 regexp: true, eqeq: true, newcap: true, forin: false */
@@ -1691,7 +1690,9 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                     case 'Invade':
                     case 'Duel':
                     case 'War':
-                        head += caap.makeTh({
+                    case 'Conquest Duel Invade':
+                    case 'Conquest Duel Duel':
+                            head += caap.makeTh({
                             text: headers[pp],
                             color: '',
                             id: '',
