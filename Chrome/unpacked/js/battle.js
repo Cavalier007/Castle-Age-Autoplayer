@@ -27,6 +27,8 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
             'conquestRankNum': 0,
             'warRankStr': '',
             'warRankNum': 0,
+            'duelChampionStr': 0,
+            'duelChampionRankNum': 0,
             'levelNum': 0,
             'armyNum': 0,
             'deityNum': 0,
@@ -104,27 +106,27 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
         15: 'High Warchief'
     };
 
-    battle.conquestDuelRankTable = {
-        0: 'Acolyte',
-        1: 'Scout',
-        2: 'Soldier',
-        3: 'Elite Soldier',
-        4: 'Squire',
-        5: 'Knight',
-        6: 'First Knight',
-        7: 'Legionnaire',
-        8: 'Centurion',
-        9: 'Champion',
-        10: 'Lieutenant Commander',
-        11: 'Commander',
-        12: 'High Commander',
-        13: 'Lieutenant General',
-        14: 'General',
-        15: 'High General',
-        16: 'Baron',
-        17: 'Earl',
-        18: 'Duke',
-    }; 
+    battle.duelChampionRankTable = {
+        0: 'No Rank',
+        1: 'Initiate',
+        2: 'Vandal',
+        3: 'Savage',
+        4: 'Brigand',
+        5: 'Enforcer',
+        6: 'Fighter',
+        7: 'Protector',
+        8: 'Defender',
+        9: 'Guardian',
+        10: 'Slaughterer',
+        11: 'Killer',
+        12: 'Slayer',
+        13: 'Avenger',
+        14: 'Rechoner',
+        15: 'Eradicator',
+        16: 'Champion',
+        17: 'Archon',
+        18: 'Master'
+    };
     
     battle.hbest = 2;
 
@@ -434,14 +436,17 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                     result.battleType = 'Invade';
                 } else if ($u.hasContent($j("#app_body #results_main_wrapper input[src*='battle_duel_again.gif']"))) {
                     result.battleType = 'Duel';
+                } else if ($u.hasContent($j("#app_body #results_main_wrapper input[src*='battle_duel_again.gif']"))) {
+                    result.battleType = 'Duel Champion';
                 } else {
                     if ($u.hasContent($j("#app_body #results_main_wrapper img[src*='icon_weapon.gif']"))) {
                         result.battleType = 'Duel';
                     } else if ($u.hasContent($j("#app_body #results_main_wrapper div[class='full_invade_results']"))) {
                         result.battleType = 'Invade';
+                    } else if ($u.hasContent($j("#app_body #results_main_wrapper input[src*='battle_duel_again.gif']"))) {
+                        result.battleType = 'Duel Champion';
                     }
                 }
-
                 if ($u.hasContent(result.battleType)) {
                     if ($u.hasContent($j("#app_body #results_main_wrapper"))) {
                         tempDiv = $j("#app_body #results_main_wrapper img[src*='battle_rank_small_icon']").eq(0);
@@ -563,29 +568,18 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                 }
 
                 break;
-            case 'Conquest Duel Invade':
-                if (result.win) {
-                    battleRecord.invadewinsNum += 1;
-                    battleRecord.ibp += result.points;
-                } else {
-                    battleRecord.invadelossesNum += 1;
-                    battleRecord.ibp -= result.points;
-                    battleRecord.invadeLostTime = Date.now();
-                }
-
-                break;
-             case 'Conquest Duel Duel':
+              case 'Duel Champion':
                 if (result.win) {
                     battleRecord.duelwinsNum += 1;
-                    battleRecord.ibp += result.points;
+                    battleRecord.dbp += result.points;
                 } else {
                     battleRecord.duellossesNum += 1;
-                    battleRecord.ibp -= result.points;
+                    battleRecord.dbp -= result.points;
                     battleRecord.duelLostTime = Date.now();
                 }
 
                 break;
-                default:
+            default:
                 con.warn("Battle type unknown!", result.battleType);
             }
 
@@ -833,6 +827,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
         'Freshmeat': {
             'Invade': 'battle_01.gif',
             'Duel': 'battle_02.gif',
+            'Duel Champion': 'festival_duelchamp_challenge_btn.gif',
             'War': 'war_button_duel.gif',
             'regex1': new RegExp('(.+)\\s*\\(Level ([0-9]+)\\)\\s*Battle: ([A-Za-z ]+) \\(Rank ([0-9]+)\\)\\s*War: ([A-Za-z ]+) \\(Rank ([0-9]+)\\)\\s*([0-9]+)', 'i'),
             'regex2': new RegExp('(.+)\\s*\\(Level ([0-9]+)\\)\\s*Battle: ([A-Za-z ]+) \\(Rank ([0-9]+)\\)\\s*([0-9]+)', 'i'),
@@ -1273,19 +1268,15 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                         tempTime = $u.setContent(battleRecord.duelLostTime, 0);
 
                         break;
+                    case 'Duel Champion':
+                        tempTime = $u.setContent(battleRecord.duelLostTime, 0);                        
+                        
+                        break;
                     case 'War':
                         tempTime = $u.setContent(battleRecord.warLostTime, 0);
 
                         break;
-                    case 'Conquest Duel Invade':
-                        tempTime = $u.setContent(battleRecord.invadeLostTime, 0);
-
-                        break;
-                    case 'Conquest Duel Duel':
-                        tempTime = $u.setContent(battleRecord.duelLostTime, 0);
-
-                        break;
-                     default:
+                    default:
                         con.warn("Battle type unknown!", config.getItem("BattleType", 'Invade'));
                     }
 
@@ -1537,7 +1528,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                 chainBPInstructions = "Number of battle points won to initiate a chain attack. Specify 0 to always chain attack.",
                 chainGoldInstructions = "Amount of gold won to initiate a chain attack. Specify 0 to always chain attack.",
                 maxChainsInstructions = "Maximum number of chain hits after the initial attack.",
-                FMRankInstructions = "The lowest relative rank below yours that " + "you are willing to spend your stamina on. Leave blank to attack " + "any rank. (Uses Battle Rank for invade and duel, Conquest Duel Rank for invade and duel, War Rank for wars.)",
+                FMRankInstructions = "The lowest relative rank below yours that " + "you are willing to spend your stamina on. Leave blank to attack " + "any rank. (Uses Battle Rank for invade and duel, War Rank for wars, Duel Champion Rank for duel champion.)",
                 FMARBaseInstructions = "This value sets the base for your Army " + "Ratio calculation [X * (Your Army Size/ Opponent Army Size)]. It is basically a multiplier for the army " +
                     "size of a player at your equal level. A value of 1 means you " + "will battle an opponent the same level as you with an army the " + "same size as you or less. Default .5",
                 FreshMeatARMaxInstructions = "This setting sets the highest value you will use for the Army Ratio [Math.min(Army Ratio, Army Ratio Max)] value. " +
@@ -1562,8 +1553,8 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                     'Only perform Player Recon, does not actually battle players.',
                     'Never - disables player battles'
                 ],
-                typeList = ['Invade', 'Duel', 'War', 'Conquest Duel Invade', 'Conquest Duel Duel'],
-                typeInst = ['Battle using Invade button', 'Battle using Duel button - no guarentee you will win though', 'War using Duel button - no guarentee you will win though'],
+                typeList = ['Invade', 'Duel', 'War', 'Duel Champion'],
+                typeInst = ['Battle using Invade button', 'Battle using Duel button - no guarentee you will win though', 'War using Duel button - no guarentee you will win though', 'Duel Champion using Challenge button'],
                 targetList = ['Freshmeat', 'Userid List', 'Raid'],
                 targetInst = ['Use settings to select a target from the Battle Page', 'Select target from the supplied list of userids', 'Raid Battles'],
                 dosiegeInstructions = "(EXPERIMENTAL) Turns on or off automatic siege assist for all raids only.",
@@ -1648,8 +1639,8 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
             table and then build the header row.
             \-------------------------------------------------------------------------------------*/
             if (config.getItem('DBDisplay', '') === 'Battle Stats' && session.getItem("BattleDashUpdate", true)) {
-                var headers = ['UserId', 'Name', 'BR', 'WR', 'Level', 'Army', 'Invade', 'Duel', 'War'],
-                    values = ['userId', 'nameStr', 'rankNum', 'warRankNum', 'levelNum', 'armyNum', 'invadewinsNum', 'duelwinsNum', 'warwinsNum'],
+                var headers = ['UserId', 'Name', 'BR', 'WR', 'Level', 'Army', 'Invade', 'Duel', 'War', 'Duel Champion'],
+                    values = ['userId', 'nameStr', 'rankNum', 'warRankNum', 'duelChampionRankNum', 'levelNum', 'armyNum', 'invadewinsNum', 'duelwinsNum', 'warwinsNum'],
                     pp = 0,
                     i = 0,
                     userIdLink = '',
@@ -1689,17 +1680,14 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                         break;
                     case 'Invade':
                     case 'Duel':
+                    case 'Duel Champion':
                     case 'War':
-                    case 'Conquest Duel Invade':
-                    case 'Conquest Duel Duel':
-                            head += caap.makeTh({
+                        head += caap.makeTh({
                             text: headers[pp],
                             color: '',
                             id: '',
                             title: '',
                             width: '10%'
-                     case 'Conquest Duel Invade':
-                     case 'Conquest Duel Duel':
                         });
                         break;
                     case 'BR':
@@ -1853,6 +1841,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
             'nameStr': '',
             'rankNum': 0,
             'warRankNum': 0,
+            'duelChampionRankNum': 0,
             'levelNum': 0,
             'armyNum': 0,
             'deityNum': 0,
