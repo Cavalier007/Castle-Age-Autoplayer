@@ -199,6 +199,16 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                 }
 
                 break;
+            case 'Duel Champion':
+                useGeneral = 'DuelGeneral';
+                staminaReq = target === 'raid' ? state.getItem('RaidStaminaReq', 1) : 1;
+                chainImg = 'festival_duelchamp_duelagain_btn.gif';
+                if (general.LevelUpCheck(useGeneral)) {
+                    useGeneral = 'LevelUpGeneral';
+                    con.log(3, 'Using level up general');
+                }
+
+                break;
             case 'War':
                 useGeneral = 'WarGeneral';
                 staminaReq = 10;
@@ -209,28 +219,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                 }
 
                 break;
-            case 'Conquest Duel Invade':
-                useGeneral = 'InvadeGeneral';
-                staminaReq = target === 'raid' ? state.getItem('RaidStaminaReq', 1) : 1;
-                chainImg = 'battle_invade_again.gif';
-                if (general.LevelUpCheck(useGeneral)) {
-                    useGeneral = 'LevelUpGeneral';
-                    con.log(3, 'Using level up general');
-                }
-
-                break; 
-            case 'Conquest Duel Duel':
-                useGeneral = 'DuelGeneral';
-                staminaReq = target === 'raid' ? state.getItem('RaidStaminaReq', 1) : 1;
-                chainImg = 'battle_duel_again.gif';
-                if (general.LevelUpCheck(useGeneral)) {
-                    useGeneral = 'LevelUpGeneral';
-                    con.log(3, 'Using level up general');
-                }
-
-                break; 
-                
-             default:
+            default:
                 con.warn('Unknown battle type ', battletype);
                 button = null;
                 return false;
@@ -419,20 +408,14 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                         tempTime = battleRecord.duelLostTime || tempTime;
 
                         break;
+                    case 'Duel Champion':
+                        tempTime = battleRecord.duelLostTime || tempTime;
+
+                        break;
                     case 'War':
                         tempTime = battleRecord.warlostTime || tempTime;
 
                         break;
-                   case 'Conquest Duel Invade':
-                        tempTime = battleRecord.invadeLostTime || tempTime;
-
-                        break;     
-                    
-                   case 'Conquest Duel Duel':
-                        tempTime = battleRecord.duelLostTime || tempTime;
-
-                        break;
-                        
                     default:
                         con.warn("Battle type unknown!", config.getItem("BattleType", 'Invade'));
                     }
