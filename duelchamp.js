@@ -444,7 +444,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                                 if (chainDCP !== '' && !$u.isNaN(chainDCP) && chainDCP >= 0) {
                                     if (points >= chainDCP) {
                                         state.setItem("DuelchampChainId", duelchampRecord.userId);
-                                        con.log(1, "Chain Attack:", duelchampRecord.userId, "Conquest Points: " + points);
+                                        con.log(1, "Chain Attack:", duelchampRecord.userId, "Duel Champion Points: " + points);
                                     } else {
                                         con.log(1, "Ignore Chain Attack:", duelchampRecord.userId, "Duel Champion Points: " + points);
                                         duelchampRecord.ignoreTime = Date.now();
