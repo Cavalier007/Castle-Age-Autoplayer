@@ -369,7 +369,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                     con.warn("duelchamp.battle: missing name targetDiv");
                 }
 
-                buttonDiv = $j("input[src*='war_invadeagainbtn.gif'],input[src*='war_duelagainbtn.gif']", bottomDiv);
+                buttonDiv = $j(input[src*='festival_duelchamp_duelagain_btn.gif']", bottomDiv);
                 if ($u.hasContent(buttonDiv)) {
                     tempText = buttonDiv.attr('src');
                     if ($u.hasContent(tempText)) {
