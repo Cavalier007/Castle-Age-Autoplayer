@@ -152,7 +152,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                 return true;
             }
 
-            if (caap.navigateTo('duelchamp_duel', 'conqduel_on.jpg')) {
+            if (caap.navigateTo('duelchamp_duel')) {
                 state.setItem("DuelchampChainId", 0);
                 button = null;
                 tempDiv = null;
