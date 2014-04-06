@@ -812,7 +812,7 @@ schedule,gifting,state,army, general,session,monster,guild_monster */
                     tempTxt = $u.setContent(tr.children().eq(1).text(), '').trim();
                     levelm = duelchamp.battles.Duelchamp.regex1.exec(tempTxt);
                     if (!$u.hasContent(levelm)) {
-                        con.warn("Can't match Raid regex in ", tempTxt);
+                        con.warn("Can't match Duel Champ regex in ", tempTxt);
                         inputDiv = null;
                         inp = null;
                         form = null;
